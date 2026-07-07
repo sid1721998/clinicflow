@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinicflow_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - clinicflow
+    depends_on:
+      - db
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: clinicflow_nginx
+    restart: unless-stopped
+    ports:
+      - "8091:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - clinicflow
+    depends_on:
+      - app
+
+  db:
+    image: postgres:16-alpine
+    container_name: clinicflow_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clinicflow
+      POSTGRES_USER: clinicflow
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - clinicflow
+
+  redis:
+    image: redis:7-alpine
+    container_name: clinicflow_redis
+    restart: unless-stopped
+    networks:
+      - clinicflow
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinicflow_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work --sleep=3 --tries=3
+    volumes:
+      - .:/var/www
+    networks:
+      - clinicflow
+    depends_on:
+      - db
+      - redis
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinicflow_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+    volumes:
+      - .:/var/www
+    networks:
+      - clinicflow
+    depends_on:
+      - db
+      - redis
+
+networks:
+  clinicflow:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local

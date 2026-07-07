@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClinicFlow — Dokumentacija</title>
+<style>
+  :root {
+    --teal: #0d9488; --teal-dark: #0f766e; --teal-light: #ccfbf1;
+    --green: #16a34a; --gray-50: #f8fafc; --gray-100: #f1f5f9;
+    --gray-800: #1e293b; --gray-600: #475569; --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--gray-800); background: var(--gray-50); line-height: 1.6; }
+  header { background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 50%, var(--green) 100%); color: white; padding: 60px 40px; text-align: center; }
+  header h1 { font-size: 3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+  header p { font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto 24px; }
+  .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+  nav { background: var(--teal-dark); padding: 0 40px; position: sticky; top: 0; z-index: 100; }
+  nav ul { display: flex; list-style: none; gap: 0; overflow-x: auto; }
+  nav ul li a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 14px 16px; display: block; font-size: 0.875rem; white-space: nowrap; transition: color 0.2s; }
+  nav ul li a:hover { color: white; background: rgba(255,255,255,0.1); }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+  section { margin-bottom: 60px; }
+  h2 { font-size: 1.8rem; color: var(--teal-dark); border-bottom: 3px solid var(--teal-light); padding-bottom: 12px; margin-bottom: 24px; }
+  h3 { font-size: 1.2rem; color: var(--gray-800); margin: 24px 0 12px; }
+  p { color: var(--gray-600); margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  th { background: var(--teal-dark); color: white; padding: 12px 16px; text-align: left; font-size: 0.875rem; }
+  td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 0.875rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+  .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 16px; border-left: 4px solid var(--teal); }
+  .card h3 { margin-top: 0; color: var(--teal-dark); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+  .stat-card { background: white; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--teal-dark); }
+  .stat-label { font-size: 0.875rem; color: var(--gray-600); margin-top: 4px; }
+  code { background: #1e293b; color: #e2e8f0; padding: 12px 16px; border-radius: 8px; display: block; font-family: 'Fira Code', monospace; font-size: 0.85rem; margin: 12px 0; overflow-x: auto; white-space: pre; }
+  .method { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; font-family: monospace; }
+  .get { background: #dbeafe; color: #1e40af; }
+  .post { background: #dcfce7; color: #166534; }
+  .put { background: #fef9c3; color: #854d0e; }
+  .delete { background: #fee2e2; color: #991b1b; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { header h1 { font-size: 2rem; } .grid-2 { grid-template-columns: 1fr; } nav ul li a { padding: 10px; font-size: 0.8rem; } }
+  footer { background: var(--gray-800); color: #94a3b8; text-align: center; padding: 24px; font-size: 0.875rem; }
+  .highlight { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px; border-radius: 4px; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏥 ClinicFlow</h1>
+  <p>Enterprise SaaS REST API za privatne poliklinike i ordinacije u Hrvatskoj</p>
+  <div class="badges">
+    <span class="badge">PHP 8.4</span>
+    <span class="badge">Laravel 11</span>
+    <span class="badge">PostgreSQL 16</span>
+    <span class="badge">65+ API ruta</span>
+    <span class="badge">Multi-tenancy</span>
+    <span class="badge">RBAC</span>
+    <span class="badge">2FA TOTP</span>
+    <span class="badge">Docker Ready</span>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#overview">Pregled</a></li>
+    <li><a href="#architecture">Arhitektura</a></li>
+    <li><a href="#modules">Moduli</a></li>
+    <li><a href="#database">Baza podataka</a></li>
+    <li><a href="#routes">API rute</a></li>
+    <li><a href="#installation">Instalacija</a></li>
+    <li><a href="#examples">Curl primjeri</a></li>
+    <li><a href="#docker">Docker</a></li>
+    <li><a href="#testing">Testovi</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="overview">
+  <h2>📋 Pregled projekta</h2>
+  <p>ClinicFlow je portfolio projekt koji demonstrira enterprise-grade PHP arhitekturu. Izgrađen za privatne poliklinike i ordinacije u Hrvatskoj, s podrškom za potpuno upravljanje kliničkim tokovima rada.</p>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-number">65+</div><div class="stat-label">API Ruta</div></div>
+    <div class="stat-card"><div class="stat-number">14</div><div class="stat-label">Modula</div></div>
+    <div class="stat-card"><div class="stat-number">14</div><div class="stat-label">Tablica u bazi</div></div>
+    <div class="stat-card"><div class="stat-number">4</div><div class="stat-label">RBAC uloge</div></div>
+    <div class="stat-card"><div class="stat-number">6</div><div class="stat-label">Docker servisa</div></div>
+    <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Feature test suite-a</div></div>
+  </div>
+
+  <div class="highlight">
+    <strong>🔑 Demo pristup:</strong> Email: <code style="display:inline;padding:2px 6px;">admin@demo-klinika.hr</code> | Lozinka: <code style="display:inline;padding:2px 6px;">demo1234</code>
+  </div>
+</section>
+
+<section id="architecture">
+  <h2>🏗️ Arhitektura i dizajn uzorci</h2>
+  <div class="grid-2">
+    <div>
+      <table>
+        <thead><tr><th>SOLID Princip</th><th>Implementacija</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SRP</strong> — Single Responsibility</td><td>Kontroleri samo delegiraju servisima</td></tr>
+          <tr><td><strong>OCP</strong> — Open/Closed</td><td>Proširivi servisi bez izmjena</td></tr>
+          <tr><td><strong>LSP</strong> — Liskov Substitution</td><td>Modeli nasljeđuju Eloquent kontrakte</td></tr>
+          <tr><td><strong>ISP</strong> — Interface Segregation</td><td>Fokusirani servisi (AuthService, InvoiceService...)</td></tr>
+          <tr><td><strong>DIP</strong> — Dependency Inversion</td><td>Dependency injection u kontrolerima</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table>
+        <thead><tr><th>Dizajn uzorak</th><th>Gdje</th></tr></thead>
+        <tbody>
+          <tr><td>Service Layer Pattern</td><td>app/Services/</td></tr>
+          <tr><td>Global Scopes (Multi-tenancy)</td><td>Svi modeli s clinic_id</td></tr>
+          <tr><td>Observer Pattern</td><td>Spatie Activitylog</td></tr>
+          <tr><td>Strategy Pattern</td><td>ReportService (CSV export)</td></tr>
+          <tr><td>Factory Pattern</td><td>Database seeders i tvornice</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="modules">
+  <h2>📦 Moduli</h2>
+  <table>
+    <thead><tr><th>Modul</th><th>Kontroler</th><th>Servis</th><th>Opis</th></tr></thead>
+    <tbody>
+      <tr><td>🔐 Autentifikacija</td><td>AuthController</td><td>AuthService</td><td>Registracija klinike + admin, login, 2FA TOTP</td></tr>
+      <tr><td>👥 Pacijenti</td><td>PatientController</td><td>PatientService</td><td>CRUD + timeline + soft delete + auto patient_number</td></tr>
+      <tr><td>👨‍⚕️ Doktori</td><td>DoctorController</td><td>—</td><td>CRUD + provjera dostupnih termina po datumu</td></tr>
+      <tr><td>📅 Termini</td><td>AppointmentController</td><td>AppointmentService</td><td>CRUD + kalendar + provjera preklapanja + podsjetnici</td></tr>
+      <tr><td>📋 Medicinski kartoni</td><td>MedicalRecordController</td><td>—</td><td>SOAP + ICD-10 + vitalni znakovi + digitalni potpis</td></tr>
+      <tr><td>💊 Recepti</td><td>PrescriptionController</td><td>PrescriptionService</td><td>CRUD + stavke lijekova + PDF generiranje</td></tr>
+      <tr><td>🔬 Lab nalazi</td><td>LabResultController</td><td>—</td><td>CRUD + stavke + referentni rasponi + flag</td></tr>
+      <tr><td>📁 Dokumenti</td><td>—</td><td>—</td><td>Polymorphic upload (pacijenti, termini, kartoni)</td></tr>
+      <tr><td>🏷️ Fakture</td><td>InvoiceController</td><td>InvoiceService</td><td>CRUD + PDV izračun + multi-valuta + PDF + mark-paid</td></tr>
+      <tr><td>🔔 Podsjetnici</td><td>—</td><td>AppointmentService</td><td>Auto-kreiranje pri zakazivanju termina</td></tr>
+      <tr><td>📊 Dashboard</td><td>DashboardController</td><td>—</td><td>Statistike klinike, revenue, termini danas</td></tr>
+      <tr><td>📈 Izvještaji</td><td>ReportController</td><td>ReportService</td><td>Revenue + doktori + CSV izvoz</td></tr>
+      <tr><td>🛡️ RBAC</td><td>UserController</td><td>—</td><td>4 uloge: admin, doctor, receptionist, nurse</td></tr>
+      <tr><td>📣 Obavijesti</td><td>NotificationController</td><td>—</td><td>Laravel Notifications + unread count + mark read</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="database">
+  <h2>🗄️ Baza podataka</h2>
+  <p>PostgreSQL 16 s 14 custom tablica + Spatie tablice (permissions, activity_log). Multi-tenancy: svaka klinika vidi samo vlastite podatke putem Eloquent Global Scopesa.</p>
+  <table>
+    <thead><tr><th>#</th><th>Tablica</th><th>Ključna polja</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>clinics</strong></td><td>name, slug, phone, email, address, plan, trial_ends_at, settings JSON</td></tr>
+      <tr><td>2</td><td><strong>users</strong></td><td>clinic_id FK, first_name, last_name, email, password, role, two_factor_secret, two_factor_enabled</td></tr>
+      <tr><td>3</td><td><strong>specializations</strong></td><td>name, description, color</td></tr>
+      <tr><td>4</td><td><strong>doctors</strong></td><td>clinic_id, user_id FK, specialization_id FK, license_number, working_hours JSON, consultation_duration, price</td></tr>
+      <tr><td>5</td><td><strong>patients</strong></td><td>clinic_id, patient_number, dob, blood_type, allergies JSON, chronic_conditions JSON, emergency_contact JSON + soft delete</td></tr>
+      <tr><td>6</td><td><strong>appointments</strong></td><td>clinic_id, patient_id, doctor_id, starts_at, ends_at, status ENUM(6), chief_complaint, cancellation_reason</td></tr>
+      <tr><td>7</td><td><strong>medical_records</strong></td><td>clinic_id, SOAP polja, icd_codes JSON, vitals JSON, status ENUM(draft/signed), signed_by FK, signed_at</td></tr>
+      <tr><td>8</td><td><strong>prescriptions</strong></td><td>clinic_id, prescription_number, valid_until, status ENUM(4)</td></tr>
+      <tr><td>9</td><td><strong>prescription_items</strong></td><td>prescription_id FK, medication_name, dosage, frequency, route, duration_days</td></tr>
+      <tr><td>10</td><td><strong>lab_results</strong></td><td>clinic_id, order_number, test_name, lab_name, status ENUM(5)</td></tr>
+      <tr><td>11</td><td><strong>lab_result_items</strong></td><td>lab_result_id FK, value, unit, reference_range, flag ENUM(normal/low/high/critical)</td></tr>
+      <tr><td>12</td><td><strong>documents</strong></td><td>documentable_type + documentable_id (polymorphic), category ENUM(6)</td></tr>
+      <tr><td>13</td><td><strong>invoices</strong></td><td>clinic_id, invoice_number, line_items JSON, subtotal, tax_rate, tax_amount, discount, total, currency ENUM(EUR/HRK/USD)</td></tr>
+      <tr><td>14</td><td><strong>reminders</strong></td><td>appointment_id FK, channel ENUM(email/sms/both), scheduled_at, status ENUM(4)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="routes">
+  <h2>🌐 API rute</h2>
+  <h3>Autentifikacija (javno)</h3>
+  <table>
+    <thead><tr><th>Metoda</th><th>Ruta</th><th>Opis</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method post">POST</span></td><td>/api/register</td><td>Registracija klinike + admin</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/login</td><td>Prijava → Bearer token</td></tr>
+    </tbody>
+  </table>
+  <h3>Autentifikacija (zaštićeno)</h3>
+  <table>
+    <thead><tr><th>Metoda</th><th>Ruta</th><th>Opis</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method post">POST</span></td><td>/api/logout</td><td>Odjava</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/me</td><td>Profil trenutnog korisnika</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/2fa/setup</td><td>QR kôd za Google Authenticator</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/2fa/verify</td><td>Verifikacija TOTP kôda</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/2fa/disable</td><td>Deaktivacija 2FA</td></tr>
+    </tbody>
+  </table>
+  <h3>Pacijenti, Doktori, Termini</h3>
+  <table>
+    <thead><tr><th>Metoda</th><th>Ruta</th><th>Opis</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method get">GET</span></td><td>/api/patients</td><td>Lista pacijenata (filtriranje, sortiranje)</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/patients</td><td>Kreiranje pacijenta</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/patients/{id}/timeline</td><td>Timeline pacijenta</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/doctors/{id}/availability</td><td>Slobodni termini doktora po datumu</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/appointments/today</td><td>Termini za danas</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/appointments/calendar</td><td>Termini po datumskom rasponu</td></tr>
+    </tbody>
+  </table>
+  <h3>Klinički zapisi</h3>
+  <table>
+    <thead><tr><th>Metoda</th><th>Ruta</th><th>Opis</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method post">POST</span></td><td>/api/medical-records/{id}/sign</td><td>Digitalni potpis kartona</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/prescriptions/{id}/pdf</td><td>PDF download recepta</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/invoices/{id}/pdf</td><td>PDF download fakture</td></tr>
+      <tr><td><span class="method post">POST</span></td><td>/api/invoices/{id}/mark-paid</td><td>Označi fakturu kao plaćenu</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/invoices/summary</td><td>Sumarne statistike faktura</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/dashboard</td><td>Dashboard statistike</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/reports/revenue</td><td>Revenue izvještaj (from/to filter)</td></tr>
+      <tr><td><span class="method get">GET</span></td><td>/api/reports/export</td><td>CSV izvoz (revenue/appointments)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="installation">
+  <h2>🚀 Instalacija</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Lokalno pokretanje</h3>
+      <code>git clone &lt;repo&gt; && cd clinicflow
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve --port=8091</code>
+    </div>
+    <div class="card">
+      <h3>Docker Compose</h3>
+      <code>cp .env.example .env
+docker-compose up -d
+docker-compose exec app \
+  php artisan migrate --seed</code>
+      <p style="margin-top:12px;">Dostupno na: <strong>http://localhost:8091</strong></p>
+    </div>
+  </div>
+</section>
+
+<section id="examples">
+  <h2>📝 Curl primjeri</h2>
+  <h3>Prijava i dohvat tokena</h3>
+  <code>curl -X POST http://localhost:8091/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@demo-klinika.hr","password":"demo1234"}'</code>
+  <h3>Dashboard statistike</h3>
+  <code>curl http://localhost:8091/api/dashboard \
+  -H "Authorization: Bearer &lt;TOKEN&gt;"</code>
+  <h3>Kreiranje pacijenta</h3>
+  <code>curl -X POST http://localhost:8091/api/patients \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Luka",
+    "last_name": "Horvat",
+    "dob": "1990-03-15",
+    "gender": "male",
+    "phone": "+385911234567",
+    "blood_type": "A+"
+  }'</code>
+  <h3>Zakazivanje termina</h3>
+  <code>curl -X POST http://localhost:8091/api/appointments \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "patient_id": 1,
+    "doctor_id": 1,
+    "starts_at": "2026-08-01T10:00:00",
+    "type": "consultation",
+    "chief_complaint": "Redovni pregled"
+  }'</code>
+  <h3>Kreiranje fakture + PDF download</h3>
+  <code>curl -X POST http://localhost:8091/api/invoices \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "patient_id": 1,
+    "currency": "EUR",
+    "line_items": [{"description":"Konzultacija","quantity":1,"unit_price":80}],
+    "tax_rate": 25
+  }'
+
+# Download PDF
+curl http://localhost:8091/api/invoices/1/pdf \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  --output faktura.pdf</code>
+</section>
+
+<section id="docker">
+  <h2>🐳 Docker arhitektura</h2>
+  <table>
+    <thead><tr><th>Servis</th><th>Image</th><th>Port</th><th>Uloga</th></tr></thead>
+    <tbody>
+      <tr><td><strong>app</strong></td><td>php:8.4-fpm-alpine</td><td>9000 (interno)</td><td>PHP-FPM aplikacijski server</td></tr>
+      <tr><td><strong>webserver</strong></td><td>nginx:alpine</td><td>8091:80</td><td>Nginx reverse proxy</td></tr>
+      <tr><td><strong>db</strong></td><td>postgres:16-alpine</td><td>interno</td><td>PostgreSQL baza podataka</td></tr>
+      <tr><td><strong>redis</strong></td><td>redis:7-alpine</td><td>interno</td><td>Cache i queue broker</td></tr>
+      <tr><td><strong>queue</strong></td><td>php:8.4-fpm-alpine</td><td>interno</td><td>Laravel Queue Worker</td></tr>
+      <tr><td><strong>scheduler</strong></td><td>php:8.4-fpm-alpine</td><td>interno</td><td>Laravel Scheduler (cron)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="testing">
+  <h2>🧪 Testovi</h2>
+  <code>php artisan test
+# ili s coverage-om:
+./vendor/bin/phpunit --coverage-html coverage/</code>
+  <table>
+    <thead><tr><th>Test suite</th><th>Testovi</th><th>Pokriva</th></tr></thead>
+    <tbody>
+      <tr><td>AuthTest</td><td>5 testova</td><td>Registracija, prijava, profil, odjava, pogrešna lozinka</td></tr>
+      <tr><td>PatientTest</td><td>4 testa</td><td>CRUD, multi-tenant izolacija, soft delete</td></tr>
+      <tr><td>AppointmentTest</td><td>4 testa</td><td>Kreiranje, lista, danas, otkazivanje</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+
+<footer>
+  <p>ClinicFlow — SaaS REST API za privatne poliklinike u <strong>Hrvatskoj</strong></p>
+  <p style="margin-top:8px;">PHP 8.4 + Laravel 11 + PostgreSQL 16 | Portfolio projekt | © 2026</p>
+</footer>
+</body>
+</html>
