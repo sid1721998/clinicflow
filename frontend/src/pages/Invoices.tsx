@@ -44,8 +44,8 @@ function InvoiceDetail({ inv, onMarkPaid, loading }: { inv: Invoice; onMarkPaid:
   return (
     <div className="p-5 space-y-4">
       {isDemoMode() && (
-        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs">
-          🔬 Demo Mode — promjene se ne čuvaju na serveru.
+        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-xs">
+          🔬 Demo Mode — podaci se čuvaju lokalno u vašem pregledniku.
         </div>
       )}
       <div className="flex items-center justify-between">
@@ -125,13 +125,12 @@ export default function Invoices() {
   const s = summary as any;
 
   const mutMarkPaid = useMutation({
-    mutationFn: () => {
-      if (isDemoMode()) return Promise.resolve({ demo: true });
-      return apiFetch(`/invoices/${selected!.id}/pay`, { method: "POST", body: JSON.stringify({ paid_amount: selected!.total_amount }) });
-    },
-    onSuccess: (res: any) => {
-      if (res?.demo) showToast("Demo Mode — plaćanje nije zabilježeno na serveru");
-      else { showToast("Faktura označena kao plaćena!"); qc.invalidateQueries({ queryKey: ["invoices"] }); qc.invalidateQueries({ queryKey: ["inv-summary"] }); }
+    mutationFn: () =>
+      apiFetch(`/invoices/${selected!.id}/pay`, { method: "POST", body: JSON.stringify({ paid_amount: selected!.total_amount }) }),
+    onSuccess: () => {
+      showToast("Faktura označena kao plaćena!");
+      qc.invalidateQueries({ queryKey: ["invoices"] });
+      qc.invalidateQueries({ queryKey: ["inv-summary"] });
       setSelected(null);
     },
   });
