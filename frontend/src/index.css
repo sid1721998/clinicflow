@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  font-family: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f8fafc;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, button, select, textarea {
+  font-family: inherit;
+}
