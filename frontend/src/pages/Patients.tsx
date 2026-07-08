@@ -237,6 +237,7 @@ export default function Patients() {
       </div>
 
       {isLoading && <div className="space-y-2 animate-pulse">{[1,2,3,4,5].map(i => <div key={i} className="bg-slate-200 rounded-xl h-16" />)}</div>}
+
       {error && <div className="text-center py-16 text-slate-400"><p className="text-3xl mb-2">⚠️</p><p className="text-sm">Greška pri dohvaćanju pacijenata</p></div>}
 
       {!isLoading && !error && (
