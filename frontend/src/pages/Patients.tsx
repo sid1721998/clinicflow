@@ -39,9 +39,10 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
 }
 
 function DemoBanner() {
+  if (!isDemoMode()) return null;
   return (
-    <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs">
-      🔬 Demo Mode — promjene se ne čuvaju. Spojite se na pravi API za stvarne operacije.
+    <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-xs">
+      🔬 Demo Mode — podaci se čuvaju lokalno u vašem pregledniku.
     </div>
   );
 }
@@ -182,37 +183,30 @@ export default function Patients() {
   const meta = (data as any)?.meta;
 
   const mutCreate = useMutation({
-    mutationFn: (body: typeof EMPTY_FORM) => {
-      if (isDemoMode()) return Promise.resolve({ demo: true });
-      return apiFetch("/patients", { method: "POST", body: JSON.stringify(body) });
-    },
-    onSuccess: (res: any) => {
-      if (res?.demo) showToast("Demo Mode — pacijent nije stvoren na serveru");
-      else { showToast("Pacijent uspješno dodan!"); qc.invalidateQueries({ queryKey: ["patients"] }); }
+    mutationFn: (body: typeof EMPTY_FORM) =>
+      apiFetch("/patients", { method: "POST", body: JSON.stringify(body) }),
+    onSuccess: () => {
+      showToast("Pacijent uspješno dodan!");
+      qc.invalidateQueries({ queryKey: ["patients"] });
       setMode(null);
     },
   });
 
   const mutUpdate = useMutation({
-    mutationFn: (body: typeof EMPTY_FORM) => {
-      if (isDemoMode()) return Promise.resolve({ demo: true });
-      return apiFetch(`/patients/${selected!.id}`, { method: "PUT", body: JSON.stringify(body) });
-    },
-    onSuccess: (res: any) => {
-      if (res?.demo) showToast("Demo Mode — promjena nije spremljena na serveru");
-      else { showToast("Pacijent ažuriran!"); qc.invalidateQueries({ queryKey: ["patients"] }); }
+    mutationFn: (body: typeof EMPTY_FORM) =>
+      apiFetch(`/patients/${selected!.id}`, { method: "PUT", body: JSON.stringify(body) }),
+    onSuccess: () => {
+      showToast("Pacijent ažuriran!");
+      qc.invalidateQueries({ queryKey: ["patients"] });
       setMode(null);
     },
   });
 
   const mutDelete = useMutation({
-    mutationFn: () => {
-      if (isDemoMode()) return Promise.resolve({ demo: true });
-      return apiFetch(`/patients/${selected!.id}`, { method: "DELETE" });
-    },
-    onSuccess: (res: any) => {
-      if (res?.demo) showToast("Demo Mode — pacijent nije obrisan na serveru");
-      else { showToast("Pacijent obrisan!"); qc.invalidateQueries({ queryKey: ["patients"] }); }
+    mutationFn: () => apiFetch(`/patients/${selected!.id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      showToast("Pacijent obrisan!");
+      qc.invalidateQueries({ queryKey: ["patients"] });
       setMode(null); setSelected(null);
     },
   });
@@ -243,7 +237,6 @@ export default function Patients() {
       </div>
 
       {isLoading && <div className="space-y-2 animate-pulse">{[1,2,3,4,5].map(i => <div key={i} className="bg-slate-200 rounded-xl h-16" />)}</div>}
-
       {error && <div className="text-center py-16 text-slate-400"><p className="text-3xl mb-2">⚠️</p><p className="text-sm">Greška pri dohvaćanju pacijenata</p></div>}
 
       {!isLoading && !error && (
